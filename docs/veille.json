@@ -1,0 +1,22 @@
+[
+  {
+    "titre": "Pourquoi Mistral lève 3 milliards d'euros auprès de Samsung, Nvidia et ASML",
+    "lien": "https://www.actuia.com/actualite/pourquoi-mistral-leve-3-milliards-deuros-aupres-de-samsung-nvidia-et-asml/",
+    "source": "ActuIA (test local)",
+    "date": "2026-09-08",
+    "theme": "Modèles & produits IA",
+    "resume": "Levée de 3 milliards d'euros en capital menée par Samsung, valorisation post-money supérieure à 21 milliards. Samsung, Nvidia et ASML sont à la fois fournisseurs de composants et actionnaires.",
+    "pertinence": "Haute",
+    "statut": "À lire"
+  },
+  {
+    "titre": "Pourquoi la troisième faille LiteLLM au KEV concerne tout proxy LLM",
+    "lien": "https://www.actuia.com/actualite/pourquoi-la-troisieme-faille-litellm-au-kev-concerne-tout-proxy-llm/",
+    "source": "ActuIA (test local)",
+    "date": "2026-09-07",
+    "theme": "Cybersécurité",
+    "resume": "La CISA a ajouté au catalogue KEV une faille de contournement d'authentification dans le module MCP de LiteLLM, corrigée depuis le 14 mai.",
+    "pertinence": "Haute",
+    "statut": "À lire"
+  }
+]

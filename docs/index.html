@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Veille Actu Tech</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #1c2430; --muted: #64707f;
+    --accent: #2563eb; --border: #e3e7ec;
+    --haute: #dc2626; --moyenne: #d97706; --basse: #6b7280;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #10151c; --card: #1a212b; --text: #e8edf3; --muted: #93a0af; --border: #2a3441; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); }
+  header { padding: 28px 20px 12px; max-width: 960px; margin: 0 auto; }
+  h1 { margin: 0 0 4px; font-size: 1.5rem; }
+  .sub { color: var(--muted); font-size: .9rem; }
+  .filtres { max-width: 960px; margin: 12px auto 0; padding: 0 20px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .filtres button { border: 1px solid var(--border); background: var(--card); color: var(--text);
+    padding: 6px 14px; border-radius: 999px; cursor: pointer; font-size: .85rem; }
+  .filtres button.actif { background: var(--accent); color: #fff; border-color: var(--accent); }
+  main { max-width: 960px; margin: 16px auto 60px; padding: 0 20px; display: grid; gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .card a { color: var(--text); text-decoration: none; font-weight: 600; font-size: 1.02rem; }
+  .card a:hover { color: var(--accent); }
+  .meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 6px; font-size: .78rem; }
+  .badge { padding: 2px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+  .badge.pert { color: #fff; border: none; }
+  .pert-haute { background: var(--haute); } .pert-moyenne { background: var(--moyenne); } .pert-basse { background: var(--basse); }
+  .resume { color: var(--muted); font-size: .9rem; margin: 0; line-height: 1.5; }
+  .vide { text-align: center; color: var(--muted); padding: 40px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>📡 Veille Actu Tech</h1>
+  <div class="sub">Mise à jour automatique quotidienne · <span id="compteur"></span></div>
+</header>
+<div class="filtres" id="filtres"></div>
+<main id="liste"><div class="vide">Chargement…</div></main>
+
+<script>
+let articles = [], filtre = "Tous";
+
+async function charger() {
+  try {
+    const r = await fetch("veille.json?" + Date.now());
+    articles = await r.json();
+    articles.sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    const themes = ["Tous", ...new Set(articles.map(a => a.theme))];
+    document.getElementById("filtres").innerHTML = themes.map(t =>
+      `<button class="${t === filtre ? "actif" : ""}" onclick="setFiltre('${t.replace(/'/g, "\\'")}')">${t}</button>`).join("");
+    afficher();
+  } catch (e) {
+    document.getElementById("liste").innerHTML = '<div class="vide">Impossible de charger veille.json</div>';
+  }
+}
+
+function setFiltre(t) { filtre = t; charger(); }
+
+function afficher() {
+  const visibles = articles.filter(a => filtre === "Tous" || a.theme === filtre);
+  document.getElementById("compteur").textContent = visibles.length + " article(s)";
+  document.getElementById("liste").innerHTML = visibles.length ? visibles.map(a => `
+    <div class="card">
+      <a href="${a.lien}" target="_blank" rel="noopener">${a.titre}</a>
+      <div class="meta">
+        <span class="badge pert pert-${(a.pertinence || "basse").toLowerCase()}">${a.pertinence}</span>
+        <span class="badge">${a.theme}</span>
+        <span class="badge">${a.source}</span>
+        <span class="badge">${a.date}</span>
+        <span class="badge">${a.statut}</span>
+      </div>
+      <p class="resume">${a.resume || ""}</p>
+    </div>`).join("") : '<div class="vide">Aucun article pour ce filtre</div>';
+}
+
+charger();
+</script>
+</body>
+</html>
