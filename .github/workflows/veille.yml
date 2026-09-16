@@ -8,9 +8,14 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: veille
+  cancel-in-progress: false
+
 jobs:
   veille:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
@@ -18,13 +23,15 @@ jobs:
       - name: Lancer la pipeline de veille
         run: python3 veille_rss.py
 
-      - name: Publier les résultats sur le site
-        run: cp veille.json docs/veille.json
-
       - name: Commit des nouveaux articles
         run: |
           git config user.name "veille-bot"
           git config user.email "veille-bot@users.noreply.github.com"
           git add veille.csv veille.json seen.json docs/veille.json
-          git diff --cached --quiet && echo "Aucun nouvel article" || git commit -m "Veille du $(date +%Y-%m-%d)"
-          git push
+          if git diff --cached --quiet; then
+            echo "Aucun nouvel article"
+          else
+            git commit -m "Veille du $(date +%Y-%m-%d)"
+            git pull --rebase origin main
+            git push
+          fi
