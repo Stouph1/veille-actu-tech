@@ -9,8 +9,9 @@ veille-actu-tech/
 ├── seen.json                      liens déjà vus (déduplication)
 ├── .github/workflows/veille.yml   exécution automatique quotidienne
 └── docs/
-    ├── index.html                 la page web (recherche, filtres thème / pertinence / langue / source)
-    └── veille.json                les 60 derniers jours, écrits par le script pour le site
+    ├── index.html                 la page web (recherche, période, tri, filtres thème / pertinence / langue / source)
+    ├── a-propos.html              la page « Comment ça marche » (sources listées depuis veille.json)
+    └── veille.json                les 60 derniers jours + la liste des sources, écrits par le script
 ```
 
 ## Étapes

@@ -312,7 +312,9 @@ def save_site(merged: list[dict]) -> None:
     limit = (datetime.now(timezone.utc) - timedelta(days=SITE_RETENTION_DAYS)).strftime("%Y-%m-%d")
     site = [r for r in merged if r["date"] >= limit]
     SITE_JSON_PATH.parent.mkdir(exist_ok=True)
-    SITE_JSON_PATH.write_text(json.dumps({"maj": datetime.now(timezone.utc).isoformat(timespec="minutes"), "articles": site}, ensure_ascii=False))
+    sources = [{"name": s["name"], "url": s["url"], "categorie": s["categorie"], "langue": s["langue"], "strict": s["strict"]} for s in SOURCES]
+    themes = {theme: len(kws) for theme, kws in THEMES.items()}
+    SITE_JSON_PATH.write_text(json.dumps({"maj": datetime.now(timezone.utc).isoformat(timespec="minutes"), "retention_jours": SITE_RETENTION_DAYS, "sources": sources, "themes": themes, "articles": site}, ensure_ascii=False))
 
 
 def main():
