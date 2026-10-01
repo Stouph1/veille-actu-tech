@@ -45,16 +45,21 @@ veille-actu-tech/
 Chaque jour à 08h (Paris), GitHub lance le script. Il interroge les 30 sources
 en parallèle (quelques secondes), ne garde que les articles des 7 derniers jours,
 élimine les doublons (liens nettoyés de leurs paramètres de tracking, titres identiques
-entre sources), écarte le bruit (articles sponsorisés, bons plans, promos), puis classe
+entre sources), écarte le bruit (articles sponsorisés, bons plans, promos, webinaires, livres blancs,
+replays : liste `EXCLURE`), puis classe
 chaque article :
 
 - **Thème** : Cybersécurité, Régulation / éthique, Modèles & produits IA, Business / marché,
   Infrastructure, Société / usages, ou « Autre / à qualifier ». Les mots-clés sont comptés
   sur des mots entiers (« ia » ne matche plus dans « média »), en français et en anglais,
-  et le thème qui cumule le plus de matches gagne.
+  pluriels compris, et le thème qui cumule le plus de matches gagne. En cas d'égalité,
+  l'ordre de `THEMES` tranche : « Modèles & produits IA », le plus générique, est en dernier.
 - **Pertinence** : score = 2 points par mot-clé fort (IA, faille, RGPD, OpenAI…), 1 point par
   mot-clé moyen (cloud, startup, GPU…), bonus +1 pour les sources spécialisées.
   Haute ≥ 10, Moyenne ≥ 5, Basse sinon. Le score brut est conservé dans la colonne `score`.
+  Un titre contenant un terme de `PERTINENCE_BASSE_FORCEE` (valorisation, S-1, embeddings…)
+  est forcé en Basse : trop technique ou trop financier pour l'audience EJP Tech.
+  Tout l'historique est requalifié à chaque exécution avec les règles en vigueur.
 
 Le site n'affiche que les 60 derniers jours pour rester rapide ; la base `veille.json` / `veille.csv`
 garde tout l'historique. Personne n'a rien à faire. Ton PC peut être éteint.

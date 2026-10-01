@@ -45,12 +45,15 @@ SOURCES = [
     {"name": "Simon Willison", "url": "https://simonwillison.net/atom/everything/", "categorie": "IA", "langue": "en", "strict": True},
 ]
 
+# Ordre important : en cas d'égalité, le premier thème gagne (Modèles en dernier, c'est le plus générique).
 THEMES = {
     "Cybersécurité": [
         "faille", "failles", "vulnérabilité", "vulnérabilités", "vulnerability", "vulnerabilities", "cve", "kev", "zero-day",
         "ransomware", "rançongiciel", "cyberattaque", "cyberattaques", "cyberattack", "cybersécurité", "cybersecurity",
         "piratage", "pirates", "hacker", "hackers", "malware", "phishing", "hameçonnage", "fuite de données", "data breach",
         "breach", "exploit", "exploited", "botnet", "cert-fr", "anssi", "cisa", "patch", "correctif", "backdoor", "spyware",
+        "intrusion", "compromis", "compromised", "détournement", "malveillant", "malicious", "doxxing",
+        "attaquant", "attacker", "cybercriminel", "cybercriminal",
     ],
     "Régulation / éthique": [
         "ai act", "rgpd", "gdpr", "régulation", "regulation", "réglementation", "cnil", "loi", "law", "décret", "éthique",
@@ -58,11 +61,14 @@ THEMES = {
         "lawsuit", "amende", "fine", "antitrust", "dma", "dsa", "souveraineté", "sovereignty", "vie privée", "privacy",
         "surveillance", "droits d'auteur", "copyright", "arcom", "autorité",
     ],
-    "Modèles & produits IA": [
-        "gpt", "chatgpt", "claude", "anthropic", "openai", "mistral", "gemini", "llama", "deepseek", "copilot", "grok",
-        "llm", "modèle", "modèles", "model", "models", "agent", "agents", "agentique", "agentic", "ia générative",
-        "generative ai", "intelligence artificielle", "artificial intelligence", "machine learning", "apprentissage automatique",
-        "hugging face", "open source", "open-source", "benchmark", "raisonnement", "reasoning", "multimodal", "mcp",
+    "Société / usages": [
+        "éducation", "education", "école", "school", "étudiants", "students", "emploi", "employment", "travail", "jobs",
+        "enfants", "children", "kids", "jeunes", "adolescents", "teens", "santé", "health", "hôpital", "deepfake", "deepfakes",
+        "désinformation", "disinformation", "misinformation", "réseaux sociaux", "social media", "tiktok", "instagram",
+        "addiction", "bien-être", "mental health", "démocratie", "élections", "elections", "religion", "église",
+        "recrutement", "recruitment", "hiring", "cv", "candidature", "candidat", "salarié", "employé", "workers",
+        "arnaque", "scam", "escroquerie", "fraude", "données personnelles", "personal data", "famille", "parents",
+        "consommateur", "consumer", "quotidien",
     ],
     "Business / marché": [
         "lève", "levée", "levée de fonds", "funding", "raises", "rachat", "acquisition", "acquiert", "acquires", "valorisation",
@@ -74,11 +80,11 @@ THEMES = {
         "semi-conducteur", "semiconductor", "nvidia", "amd", "tsmc", "cloud", "supercalculateur", "supercomputer",
         "nucléaire", "nuclear", "énergie", "energy", "électricité", "electricity", "réseau", "fibre", "5g", "6g", "quantique", "quantum",
     ],
-    "Société / usages": [
-        "éducation", "education", "école", "school", "étudiants", "students", "emploi", "employment", "travail", "jobs",
-        "enfants", "children", "kids", "jeunes", "adolescents", "teens", "santé", "health", "hôpital", "deepfake", "deepfakes",
-        "désinformation", "disinformation", "misinformation", "réseaux sociaux", "social media", "tiktok", "instagram",
-        "addiction", "bien-être", "mental health", "démocratie", "élections", "elections", "religion", "église",
+    "Modèles & produits IA": [
+        "gpt", "chatgpt", "claude", "anthropic", "openai", "mistral", "gemini", "llama", "deepseek", "copilot", "grok",
+        "llm", "modèle", "modèles", "model", "models", "agent", "agents", "agentique", "agentic", "ia générative",
+        "generative ai", "intelligence artificielle", "artificial intelligence", "machine learning", "apprentissage automatique",
+        "hugging face", "open source", "open-source", "benchmark", "raisonnement", "reasoning", "multimodal", "mcp",
     ],
 }
 
@@ -88,10 +94,26 @@ PERTINENCE_HAUTE = [
     "faille", "failles", "vulnérabilité", "vulnérabilités", "vulnerability", "vulnerabilities", "cve", "cisa", "exploited", "flaw", "flaws",
     "cyberattaque", "cyberattack", "ransomware", "rançongiciel", "zero-day", "fuite de données", "malware", "phishing",
     "data breach", "ai act", "rgpd", "cnil", "deepfake", "désinformation", "souveraineté", "commission européenne",
+    "emploi", "cv", "recrutement", "école", "étudiant", "élève", "arnaque", "scam", "vie privée", "privacy",
+    "données personnelles", "enfants", "jeunes", "adolescents",
 ]
 PERTINENCE_MOYENNE = [
     "cloud", "startup", "start-up", "levée", "funding", "régulation", "regulation", "agent", "agents", "modèle", "model",
     "open source", "gpu", "datacenter", "data center", "quantique", "quantum", "réseaux sociaux", "social media", "robot", "robots",
+]
+
+# Trop technique ou purement financier pour l'audience EJP Tech : pertinence forcée à Basse si le TITRE
+# en contient un (donc écarté des médias généralistes, gardé pour info depuis les sources spécialisées).
+PERTINENCE_BASSE_FORCEE = [
+    "s-1", "bon de souscription", "warrants", "octets par jeton", "fp4", "fp8", "cache clés-valeurs", "kv cache",
+    "mélange d'experts", "mixture of experts", "milliards de paramètres", "billion parameters", "embeddings",
+    "vecteurs", "base vectorielle", "vector database", "valorisation", "valuation", "carnet de commandes",
+]
+
+# Contenus exclus d'office (jamais insérés) : promo, auto-promotion, formats non exploitables
+EXCLURE = [
+    "webinar", "webinaire", "livre blanc", "white paper", "annonce actuia", "offre d'emploi", "replay",
+    "partenariat éditorial", "contenu sponsorisé", "publireportage",
 ]
 
 CATEGORIE_BONUS = {"IA": 1, "Cyber": 1, "Institution": 1, "Tech": 0}
@@ -118,12 +140,15 @@ ENTITIES = {"&nbsp;": " ", "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"'
 
 def compile_keywords(words: list[str]) -> re.Pattern:
     alts = sorted((re.escape(w.lower()) for w in words), key=len, reverse=True)
-    return re.compile(r"(?<![\w-])(?:" + "|".join(alts) + r")(?![\w-])", re.IGNORECASE)
+    return re.compile(r"(?<![\w-])(?:" + "|".join(alts) + r")s?(?![\w-])", re.IGNORECASE)
 
 
 THEME_PATTERNS = {theme: compile_keywords(kws) for theme, kws in THEMES.items()}
 HAUTE_PATTERN = compile_keywords(PERTINENCE_HAUTE)
 MOYENNE_PATTERN = compile_keywords(PERTINENCE_MOYENNE)
+BASSE_FORCEE_PATTERN = compile_keywords(PERTINENCE_BASSE_FORCEE)
+EXCLURE_PATTERN = compile_keywords(EXCLURE)
+REPLAY_ATTACK_RE = re.compile(r"replay attack", re.IGNORECASE)
 
 
 def fetch(url: str) -> bytes:
@@ -201,18 +226,24 @@ def entry_link(el: ET.Element) -> str:
     return (first_text(el, "link", "guid", "id") or "").strip()
 
 
-def score_text(text: str, categorie: str) -> tuple[str, int, str]:
+def score_text(text: str, categorie: str, titre: str = "") -> tuple[str, int, str]:
     theme_scores = {theme: len(pat.findall(text)) for theme, pat in THEME_PATTERNS.items()}
     best_theme, best_score = max(theme_scores.items(), key=lambda kv: kv[1])
     theme = best_theme if best_score > 0 else "Autre / à qualifier"
     score = len(HAUTE_PATTERN.findall(text)) * 2 + len(MOYENNE_PATTERN.findall(text)) + CATEGORIE_BONUS.get(categorie, 0)
-    if score >= 10:
+    if BASSE_FORCEE_PATTERN.search(titre):
+        pertinence = "Basse"
+    elif score >= 10:
         pertinence = "Haute"
     elif score >= 5:
         pertinence = "Moyenne"
     else:
         pertinence = "Basse"
     return theme, score, pertinence
+
+
+def is_excluded(text: str) -> bool:
+    return bool(EXCLURE_PATTERN.search(REPLAY_ATTACK_RE.sub("", text)))
 
 
 def parse_feed(xml_bytes: bytes, source: dict, cutoff: datetime | None) -> list[dict]:
@@ -229,8 +260,10 @@ def parse_feed(xml_bytes: bytes, source: dict, cutoff: datetime | None) -> list[
         if cutoff and dt and dt < cutoff:
             continue
         resume = truncate(strip_title(clean(first_text(el, "description", "summary", "content", "encoded")), titre), RESUME_MAX)
+        if is_excluded(f"{titre} {resume}"):
+            continue
         blob = f"{titre} {titre} {resume}"
-        theme, score, pertinence = score_text(blob, source["categorie"])
+        theme, score, pertinence = score_text(blob, source["categorie"], titre)
         if source.get("strict") and (theme == "Autre / à qualifier" or pertinence == "Basse"):
             continue
         records.append({
@@ -286,9 +319,8 @@ def upgrade(r: dict) -> dict:
     src = SOURCE_BY_NAME.get(r["source"], {"categorie": "Tech", "langue": "fr"})
     r["categorie"] = r["categorie"] or src["categorie"]
     r["langue"] = r["langue"] or src["langue"]
-    if not isinstance(r["score"], int):
-        r["theme"], r["score"], r["pertinence"] = score_text(f"{r['titre']} {r['titre']} {r['resume']}", r["categorie"])
     r["resume"] = strip_title(r["resume"], r["titre"])
+    r["theme"], r["score"], r["pertinence"] = score_text(f"{r['titre']} {r['titre']} {r['resume']}", r["categorie"], r["titre"])
     r["statut"] = r["statut"] or STATUT_INITIAL
     return r
 
@@ -297,6 +329,8 @@ def save_central(new_records: list[dict]) -> list[dict]:
     existing = json.loads(JSON_PATH.read_text()) if JSON_PATH.exists() else []
     by_link = {}
     for r in existing + new_records:
+        if is_excluded(f"{r['titre']} {r['resume']}"):
+            continue
         r = upgrade(r)
         by_link[r["lien"]] = r
     merged = sorted(by_link.values(), key=lambda r: (r["date"], r.get("score") or 0), reverse=True)

@@ -75,8 +75,8 @@
   <h2>Chaque matin, en cinq étapes</h2>
   <ol class="etapes">
     <li><div><b>Collecte.</b> Vers 8 h (heure de Paris), le robot interroge en parallèle les flux RSS des sources listées plus bas. Seuls les articles publiés dans les <b>7 derniers jours</b> sont retenus.</div></li>
-    <li><div><b>Nettoyage.</b> Les liens sont débarrassés de leurs paramètres de suivi publicitaire, les doublons (même lien ou même titre repris par plusieurs médias) sont fusionnés, et les articles sponsorisés, bons plans et promotions sont écartés.</div></li>
-    <li><div><b>Classement par thème.</b> Le titre et le résumé sont comparés à des listes de mots-clés en français et en anglais. Le thème qui réunit le plus de mots-clés gagne. Sans aucun mot-clé, l'article part dans « Autre / à qualifier ».</div></li>
+    <li><div><b>Nettoyage.</b> Les liens sont débarrassés de leurs paramètres de suivi publicitaire, les doublons (même lien ou même titre repris par plusieurs médias) sont fusionnés, et les articles sponsorisés, bons plans, promotions, webinaires, livres blancs et replays sont écartés.</div></li>
+    <li><div><b>Classement par thème.</b> Le titre et le résumé sont comparés à des listes de mots-clés en français et en anglais. Le thème qui réunit le plus de mots-clés gagne ; en cas d'égalité, le thème le plus spécifique l'emporte sur « Modèles & produits IA ». Sans aucun mot-clé, l'article part dans « Autre / à qualifier ».</div></li>
     <li><div><b>Note de pertinence.</b> Un score est calculé à partir des mots-clés trouvés (voir ci-dessous). Pour les médias généralistes, seuls les articles rattachés à un thème et notés au moins « Moyenne » sont conservés. Les sources spécialisées (cyber, institutions, éditeurs d'IA) sont gardées intégralement.</div></li>
     <li><div><b>Publication.</b> Les nouveaux articles sont ajoutés à la base, la page est régénérée et mise en ligne automatiquement. La page affiche les 60 derniers jours ; l'historique complet reste conservé dans le dépôt.</div></li>
   </ol>
@@ -90,14 +90,14 @@
     <div><b>Modèles & produits IA</b><span>ChatGPT, Claude, Gemini, Mistral, agents, modèles ouverts, nouveautés produits…</span></div>
     <div><b>Business / marché</b><span>levées de fonds, rachats, valorisations, partenariats, résultats…</span></div>
     <div><b>Infrastructure</b><span>puces, GPU, datacenters, cloud, énergie, réseaux, quantique…</span></div>
-    <div><b>Société / usages</b><span>éducation, jeunes, emploi, santé, deepfakes, désinformation, réseaux sociaux…</span></div>
+    <div><b>Société / usages</b><span>éducation, jeunes, emploi, recrutement et CV, arnaques, données personnelles, santé, deepfakes, réseaux sociaux…</span></div>
     <div><b>Autre / à qualifier</b><span>aucun mot-clé reconnu : à trier à la main, ou à ignorer.</span></div>
   </div>
 </section>
 
 <section>
   <h2>La pertinence</h2>
-  <p>Chaque mot-clé <b>fort</b> trouvé dans le titre ou le résumé vaut 2 points (IA, faille, RGPD, OpenAI, Anthropic, Mistral, deepfake, souveraineté…), chaque mot-clé <b>moyen</b> vaut 1 point (cloud, startup, GPU, agents, réseaux sociaux…). Le titre compte double. Les sources spécialisées reçoivent un point de bonus.</p>
+  <p>Chaque mot-clé <b>fort</b> trouvé dans le titre ou le résumé vaut 2 points (IA, faille, RGPD, OpenAI, Anthropic, Mistral, deepfake, souveraineté…), chaque mot-clé <b>moyen</b> vaut 1 point (cloud, startup, GPU, agents, réseaux sociaux…). Le titre compte double. Les sources spécialisées reçoivent un point de bonus. Un titre trop technique ou purement financier (valorisation, S-1, « milliards de paramètres », embeddings…) est ramené en « Basse », quel que soit son score.</p>
   <div class="pertinences">
     <div><span class="badge pert pert-haute">Haute</span><span>score de 10 ou plus : à lire en priorité, sujet central pour la veille.</span></div>
     <div><span class="badge pert pert-moyenne">Moyenne</span><span>score de 5 à 9 : intéressant, à parcourir selon le temps disponible.</span></div>
