@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import csv
+import html
 import json
 import re
 import sys
@@ -135,7 +136,6 @@ FIELDS = ["titre", "lien", "source", "categorie", "langue", "date", "theme", "re
 
 TAG_RE = re.compile(r"<[^>]+>")
 SPACE_RE = re.compile(r"\s+")
-ENTITIES = {"&nbsp;": " ", "&amp;": "&", "&lt;": "<", "&gt;": ">", "&quot;": '"', "&#39;": "'", "&#8217;": "'", "&#8230;": "…", "&hellip;": "…", "&rsquo;": "'", "&laquo;": "«", "&raquo;": "»"}
 
 
 def compile_keywords(words: list[str]) -> re.Pattern:
@@ -159,8 +159,7 @@ def fetch(url: str) -> bytes:
 
 def clean(text: str) -> str:
     text = TAG_RE.sub(" ", text or "")
-    for k, v in ENTITIES.items():
-        text = text.replace(k, v)
+    text = html.unescape(text)
     return SPACE_RE.sub(" ", text).strip()
 
 
@@ -319,7 +318,7 @@ def upgrade(r: dict) -> dict:
     src = SOURCE_BY_NAME.get(r["source"], {"categorie": "Tech", "langue": "fr"})
     r["categorie"] = r["categorie"] or src["categorie"]
     r["langue"] = r["langue"] or src["langue"]
-    r["resume"] = strip_title(r["resume"], r["titre"])
+    r["titre"], r["resume"] = html.unescape(r["titre"]), strip_title(html.unescape(r["resume"]), html.unescape(r["titre"]))
     r["theme"], r["score"], r["pertinence"] = score_text(f"{r['titre']} {r['titre']} {r['resume']}", r["categorie"], r["titre"])
     r["statut"] = r["statut"] or STATUT_INITIAL
     return r
