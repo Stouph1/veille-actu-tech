@@ -17,16 +17,17 @@ function texteLisible(h) {
 }
 
 let texte = texteLisible(html);
-const LIMITE = 20000; // environ 5 000 mots, largement assez pour un article de presse
+const LIMITE = 12000; // environ 2 000 mots : l'essentiel d'un article, pour un coût maîtrisé
 const tronque = texte.length > LIMITE;
 if (tronque) texte = texte.slice(0, LIMITE);
 const complet = texte.length > 800;
 
 const a = sel.article;
 const formats = {
-  'carrousel': 'Produis uniquement le carrousel (pas de script vidéo).',
-  'video': 'Produis uniquement le script vidéo (pas de carrousel).',
-  'les deux': 'Produis le carrousel ET le script vidéo.',
+  'carrousel': 'carrousel seulement (pas de section Reel)',
+  'reel': 'reel seulement (pas de section Carrousel)',
+  'video': 'reel seulement (pas de section Carrousel)',
+  'les deux': 'Reel ET carrousel',
 };
 
 const demande = [
@@ -51,7 +52,7 @@ return [{
     texte_complet: complet,
     requete: {
       model: 'claude-opus-5-5',
-      max_tokens: 16000,
+      max_tokens: 8000,
       output_config: { effort: 'medium' },
       fallbacks: 'default',
       system: __PROMPT_SYSTEME__,

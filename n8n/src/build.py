@@ -29,6 +29,11 @@ def champ(i, name, value, type_="string"):
 
 nodes = [
     node("Lancer", "n8n-nodes-base.manualTrigger", 1, 0, {}),
+    # Lancement automatique : actif seulement quand le workflow est activé dans n8n.
+    # Tous les 2 jours à 10 h (heure de Paris) ; mettre daysInterval à 1 pour tous les jours.
+    {**node("Tous les 2 jours a 10h", "n8n-nodes-base.scheduleTrigger", 1.2, 0, {
+        "rule": {"interval": [{"field": "days", "daysInterval": 2, "triggerAtHour": 10, "triggerAtMinute": 0}]},
+    }), "id": "ejp-auto", "position": [0, 520]},
     node("1. Choisir l article", "n8n-nodes-base.set", 3.4, 220, {
         "mode": "manual",
         "assignments": {"assignments": [
@@ -70,15 +75,16 @@ nodes = [
     node("7. Resultat", "n8n-nodes-base.code", 2, 1540, {"jsCode": code["7_resultat"]}),
 ]
 
-order = [n["name"] for n in nodes]
+order = [n["name"] for n in nodes if n["id"] != "ejp-auto"]
 connections = {a: {"main": [[{"node": b, "type": "main", "index": 0}]]} for a, b in zip(order, order[1:])}
+connections["Tous les 2 jours a 10h"] = {"main": [[{"node": "1. Choisir l article", "type": "main", "index": 0}]]}
 
 workflow = {
     "id": "ejpTechDecrypte1",
     "name": "EJP Tech Décrypte - article vers carrousel et script",
     "nodes": nodes,
     "connections": connections,
-    "settings": {"executionOrder": "v1"},
+    "settings": {"executionOrder": "v1", "timezone": "Europe/Paris"},
     "pinData": {},
 }
 OUT.write_text(json.dumps(workflow, ensure_ascii=False, indent=2), encoding="utf-8")
