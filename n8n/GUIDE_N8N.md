@@ -102,6 +102,7 @@ publiés par semaine, tous les 2 jours laisse déjà le choix sans saturer la li
 | « … credit balance is too low » | Plus de crédit | Recharger dans Billing |
 | `texte_article` = « résumé seulement » | Le site bloque la lecture automatique | Le décryptage est fait sur le titre et le résumé, donc tous les faits sont à vérifier. Choisis plutôt une autre source sur le même sujet |
 | « Réponse coupée » | Texte trop long | Relancer avec `format` = `reel` ou `carrousel` |
+| Dans ClickUp, on voit des `##`, des `**` ou des `|` | Option *Markdown Content* non activée dans le nœud ClickUp | **Add Field > Markdown Content** : activé |
 | Tâche ClickUp avec un titre mais sans description | Champ *Content* absent, ou pas en mode Expression | Dans le nœud ClickUp : **Add Field > Content**, bascule sur **Expression**, colle `{{ $json.decryptage }}` |
 
 ## 7. Envoyer le résultat dans ClickUp (15 min, une seule fois)
@@ -120,7 +121,8 @@ C'est une clé personnelle : les tâches seront créées en ton nom.
    `🔎 Décrypte : {{ $json.titre }}`
 5. **Add Field** > **Content**, en mode Expression :
    `{{ $json.decryptage }}`
-   Selon ta version de n8n, ajoute aussi **Markdown Content** s'il est proposé, pour garder titres et listes.
+   Puis **Add Field** > **Markdown Content** et active-le. Sans cette option, ClickUp affiche les `##` et les `**` tels quels
+   au lieu des titres et du gras.
 6. Facultatif, toujours via **Add Field** :
    - **Status** : le statut de ta liste qui veut dire « à valider » (par exemple `TO REVIEW`, en respectant les majuscules) ;
    - **Assignees** : la personne qui valide ;

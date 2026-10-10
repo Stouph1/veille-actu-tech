@@ -30,7 +30,7 @@ Avant d'écrire, réponds pour toi aux 6 questions : 1. Que s'est-il passé ? 2.
 
 # Format de sortie
 
-Markdown, **450 mots maximum au total**, exactement ces titres, rien avant ni après :
+Markdown simple (titres, gras, listes, emojis ; **jamais de tableau**), **450 mots maximum au total**, exactement ces titres, rien avant ni après :
 
 # <Titre interne, 10 mots maximum>
 
@@ -46,10 +46,17 @@ Markdown, **450 mots maximum au total**, exactement ces titres, rien avant ni ap
 2. …
 3. …
 
-| Temps | Voix | Texte à l'écran | Plan |
-|---|---|---|---|
-| 0-2 s | (hook n°1) | … | face caméra |
-| … | … | … | … |
+**Script** (un bloc par plan, sans tableau) :
+
+**0-2 s · <plan, ex. face caméra>**
+🎙️ <voix : le hook n°1>
+📱 <texte à l'écran, 6 mots maximum>
+
+**2-8 s · <plan>**
+🎙️ …
+📱 …
+
+(5 à 7 blocs au total)
 
 **CTA** : …
 **Couverture** : <texte de la miniature, 5 mots maximum>
