@@ -18,8 +18,12 @@ const u = r.usage || {};
 // Tarifs Claude Opus 5.5 : 4 $ / million de jetons en entrée, 20 $ / million en sortie.
 const cout = ((u.input_tokens || 0) * 4 + (u.output_tokens || 0) * 20) / 1e6;
 
+const titre = ((texte.match(/^#\s+(.+)$/m) || [])[1] || sel.article.titre || 'Décryptage').trim();
+
 return [{
   json: {
+    titre,
+    lien_source: sel.article.lien,
     decryptage: texte + (r.stop_reason === 'max_tokens' ? '\n\n⚠️ Réponse coupée (trop longue) : relance avec un seul format.' : ''),
     article: `${sel.article.titre} — ${sel.article.lien}`,
     selection: sel.mode_selection,

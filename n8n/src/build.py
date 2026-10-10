@@ -11,7 +11,8 @@ from pathlib import Path
 
 SRC = Path(__file__).parent
 OUT = SRC.parent / "ejp_tech_decrypte.json"
-VEILLE_URL = "https://raw.githubusercontent.com/eglisejp-tech/veille-actu-tech/main/docs/veille.json"
+# Copie publique publiée chaque jour sur netbudget.app (le dépôt GitHub est privé).
+VEILLE_URL = "https://www.netbudget.app/ejp-tech-actu/veille.json"
 
 prompt = (SRC / "prompt_systeme.md").read_text(encoding="utf-8").strip()
 code = {name: (SRC / f"{name}.js").read_text(encoding="utf-8") for name in ("3_selectionner", "5_preparer", "7_resultat")}

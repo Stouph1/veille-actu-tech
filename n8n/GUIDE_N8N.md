@@ -35,10 +35,13 @@ Deux options :
 1. Dans n8n : **Create workflow**, puis menu **⋯** en haut à droite > **Import from File…** > choisis `n8n/ejp_tech_decrypte.json`.
 2. Double-clique sur le nœud **6. Claude - EJP Tech Decrypte**.
    - *Authentication* : **Generic Credential Type** ; *Generic Auth Type* : **Header Auth**.
-   - *Credential for Header Auth* : **Create new credential**.
-     - **Name** : `x-api-key`
-     - **Value** : ta clé `sk-ant-…`
-     - Renomme la credential `Anthropic API` (en haut de la fenêtre), puis **Save**.
+   - *Credential for Header Auth* : **Create new credential**. La fenêtre a 3 zones :
+     - **Le titre en haut** (cliquable) : le nom de la credential dans n8n, mets `Anthropic API`.
+     - **Name** : le nom technique de l'en-tête HTTP. Écris exactement `x-api-key` : pas ton prénom, pas un libellé.
+       C'est ce champ qui dit à Claude « voici la clé ». Avec un autre nom, l'erreur est
+       « x-api-key header is required ».
+     - **Value** : ta clé `sk-ant-…`.
+     - **Save**.
 3. **Save** le workflow (Cmd + S).
 
 ## 4. Utiliser le workflow (2 min par article)
@@ -47,11 +50,11 @@ Deux options :
 
    | Champ | À quoi ça sert | Exemple |
    |---|---|---|
-   | `lien_article` | Le lien de l'actu choisie (site de veille, ClickUp ou n'importe quel média). **Vide = choix automatique** du meilleur article des derniers jours pour notre public | `https://next.ink/260011/…` |
+   | `lien_article` | Le lien **d'un article** (celui sur lequel tu cliques dans la veille, pas l'adresse de la veille elle-même). **Vide, ou l'adresse de la veille = choix automatique** du meilleur article des derniers jours pour notre public | `https://next.ink/260011/…` |
    | `format` | `carrousel`, `video` ou `les deux` | `les deux` |
    | `consigne` | Facultatif : un angle, une contrainte | `angle étudiants en partiel` |
    | `jours` | Période du choix automatique | `3` |
-   | `veille_json_url` | Adresse des données de la veille, à ne pas toucher | |
+   | `veille_json_url` | Données de la veille, copie publique sur netbudget.app, à ne pas toucher | |
 
 2. Clique sur **Execute workflow** (en bas). Compte environ 1 minute.
 3. Clique sur le nœud **7. Resultat** : le champ `decryptage` contient le texte complet, à copier dans ClickUp.
@@ -68,26 +71,53 @@ Astuce n8n : chaque nœud montre ce qu'il a reçu et produit (onglets *Input* et
 
 | Message | Cause | Solution |
 |---|---|---|
-| « Aucun article : colle un lien… » | Les données de la veille sont illisibles (dépôt GitHub privé) | Colle un lien dans `lien_article` : ça marche toujours. Pour le choix automatique, voir la section 6 |
+| « x-api-key header is required » | Le champ **Name** de la credential n'est pas `x-api-key` | Le corriger (étape 3.2) |
+| « Aucun article : colle un lien… » | Les données de la veille sont illisibles | Ouvre `veille_json_url` dans un navigateur. En attendant, colle un lien dans `lien_article`, ça marche toujours |
 | « Appel à Claude refusé : invalid x-api-key » | Clé mal copiée | Refaire l'étape 3.2 |
 | « … credit balance is too low » | Plus de crédit | Recharger dans Billing |
 | `texte_article` = « résumé seulement » | Le site bloque la lecture automatique | Le décryptage est fait sur le titre et le résumé, donc tous les faits sont à vérifier. Choisis plutôt une autre source sur le même sujet |
 | « Réponse coupée » | Texte trop long | Relancer avec `format` = `carrousel` ou `video` |
 
-## 6. Et la page de veille en 404 ?
+## 6. Envoyer le résultat dans ClickUp (15 min, une seule fois)
 
-Le workflow n'en a pas besoin : il lit directement le fichier `docs/veille.json` du dépôt.
-Mais si le dépôt est **privé**, n8n ne peut pas lire ce fichier (seul le mode « lien collé » marche), et GitHub Pages
-ne publie pas non plus le site sur un compte gratuit, d'où le 404. Deux solutions :
+Le décryptage arrive directement comme une tâche ClickUp, assignée et notifiée sur le téléphone de l'équipe via l'app ClickUp.
 
-- **Rendre le dépôt public** (recommandé) : *Settings > General > Danger Zone > Change visibility*. La veille ne contient que des
-  titres, liens et résumés publics, sans aucune donnée personnelle. Ensuite *Settings > Pages* : Branch `main`, dossier `/docs`.
-- **Le garder privé** : passer l'organisation GitHub en offre payante pour Pages, et créer un jeton GitHub pour n8n.
+**a. Clé ClickUp**
+Dans ClickUp : ton avatar > **Settings** > **Apps** > **API Token** > *Generate*. Copie la clé, qui commence par `pk_`.
+C'est une clé personnelle : les tâches seront créées en ton nom.
 
-Si le dépôt a changé d'adresse, mets à jour `veille_json_url` dans le nœud 1
-(format : `https://raw.githubusercontent.com/<compte>/veille-actu-tech/main/docs/veille.json`).
+**b. Ajouter le nœud**
+1. Survole le nœud **7. Resultat**, clique sur le **+** à sa droite, cherche **ClickUp**, puis choisis **Create a task**.
+2. *Credential* > **Create new credential** > *ClickUp API* > colle la clé `pk_…` > **Save**.
+3. Choisis dans les listes déroulantes **Team** (ton espace), **Space**, **Folder** (« ACTU TECH »), **List** (« VEILLE & SOURCING » ou ta liste de décryptages).
+4. **Name** : clique sur le champ, passe en mode **Expression**, puis colle :
+   `🔎 Décrypte : {{ $json.titre }}`
+5. **Add Field** > **Content**, en mode Expression :
+   `{{ $json.decryptage }}`
+   Selon ta version de n8n, ajoute aussi **Markdown Content** s'il est proposé, pour garder titres et listes.
+6. Facultatif, toujours via **Add Field** :
+   - **Status** : le statut de ta liste qui veut dire « à valider » (par exemple `TO REVIEW`, en respectant les majuscules) ;
+   - **Assignees** : la personne qui valide ;
+   - **Due Date**.
+7. Renomme le nœud `8. ClickUp - creer la tache`, puis **Save** et **Execute workflow**.
 
-## 7. Modifier le comportement
+Le lien de l'article (`{{ $json.lien_source }}`) se trouve déjà en tête du texte. Pour remplir aussi le champ personnalisé
+« Source URL », il faut son identifiant : **Add Field** > **Custom Fields**. C'est à faire dans un second temps.
+
+**Et WhatsApp ?** C'est possible, mais lourd : il faut un compte Meta Business, un numéro dédié vérifié, et des modèles de
+messages validés par Meta. Le plus simple, dans l'ordre :
+1. Les **notifications de l'app ClickUp** (déjà sur vos téléphones) : rien à ajouter, il suffit d'assigner la tâche.
+2. **Telegram** : nœud *Telegram > Send Message*, avec un bot créé en 2 minutes via @BotFather, gratuit et sans validation.
+   Message conseillé : titre + lien de la tâche ClickUp, pas le décryptage complet.
+3. **WhatsApp** : nœud *WhatsApp Business Cloud*, seulement si l'équipe y tient vraiment.
+
+## 7. La page de veille
+
+La veille est publiée sur **https://www.netbudget.app/ejp-tech-actu**, mise à jour chaque jour par le robot
+(si le secret `NETBUDGET_TOKEN` est configuré). Le workflow lit ses données (`veille.json`) à cette adresse,
+car le dépôt GitHub est privé. L'ancienne adresse `eglisejp-tech.github.io/veille-actu-tech` reste en 404, c'est normal.
+
+## 8. Modifier le comportement
 
 - **Le ton, le canevas, les formats** : `src/prompt_systeme.md`. Il contient aussi les chiffres du rapport du stand
   (audience, outils, freins, formats préférés), que Claude prend en compte à chaque décryptage.
@@ -101,5 +131,4 @@ un article, la demande est automatiquement relancée sur un autre modèle.
 ## Prochaines étapes possibles
 
 1. Remplacer « Lancer » par un **formulaire n8n** (Form Trigger) : un lien à partager à l'équipe, sans ouvrir n8n.
-2. Envoyer le résultat directement dans **ClickUp** (nœud ClickUp, avec un jeton API ClickUp) : création d'une tâche « Proposition ».
-3. Déclencher automatiquement le workflow quand une tâche ClickUp passe en « À décrypter ».
+2. Déclencher automatiquement le workflow quand une tâche ClickUp passe en « À décrypter » (nœud *ClickUp Trigger*).

@@ -6,7 +6,9 @@ const veille = $input.first().json || {};
 const articles = Array.isArray(veille.articles) ? veille.articles : [];
 
 const normaliser = (u) => (u || '').trim().replace(/[?#].*$/, '').replace(/\/+$/, '').toLowerCase();
-const lien = normaliser(choix.lien_article);
+// Le lien du site de veille lui-même (ou rien) = choix automatique.
+const lienBrut = normaliser(choix.lien_article);
+const lien = /ejp-tech-actu$|veille-actu-tech$/.test(lienBrut) ? '' : lienBrut;
 
 // Ce qui parle à l'audience du stand (étudiants, ChatGPT au quotidien, données perso, confiance).
 const MOTS_AUDIENCE = [
