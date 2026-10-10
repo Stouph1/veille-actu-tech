@@ -16,6 +16,10 @@ jobs:
   veille:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      # Jeton GitHub (fine-grained, Contents: Read and write sur Stouph1/netbudget).
+      # Absent : la publication sur netbudget.app/ejp-tech-actu est simplement sautée.
+      NETBUDGET_TOKEN: ${{ secrets.NETBUDGET_TOKEN }}
     steps:
       - name: Récupérer le dépôt
         uses: actions/checkout@v4
@@ -32,6 +36,31 @@ jobs:
             echo "Aucun nouvel article"
           else
             git commit -m "Veille du $(date +%Y-%m-%d)"
+            git pull --rebase origin main
+            git push
+          fi
+
+      - name: Récupérer le site netbudget.app
+        if: env.NETBUDGET_TOKEN != ''
+        uses: actions/checkout@v4
+        with:
+          repository: Stouph1/netbudget
+          ref: main
+          token: ${{ secrets.NETBUDGET_TOKEN }}
+          path: netbudget
+
+      - name: Publier sur netbudget.app/ejp-tech-actu
+        if: env.NETBUDGET_TOKEN != ''
+        run: |
+          python3 scripts/publier_netbudget.py netbudget/website/public
+          cd netbudget
+          git config user.name "veille-bot"
+          git config user.email "veille-bot@users.noreply.github.com"
+          git add website/public/ejp-tech-actu
+          if git diff --cached --quiet; then
+            echo "Site netbudget déjà à jour"
+          else
+            git commit -m "ejp-tech-actu : veille du $(date +%Y-%m-%d)"
             git pull --rebase origin main
             git push
           fi
